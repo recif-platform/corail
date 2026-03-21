@@ -1,0 +1,19 @@
+# ADK Agent Example — Récif Platform
+# Register with: recif register -f examples/adk-agent/agent.yaml
+
+name: "adk-example"
+framework: "adk"
+description: "A simple ADK agent that answers questions helpfully."
+version: "0.1.0"
+
+model: "gpt-4"
+llm_provider: "openai"
+temperature: 0.7
+
+system_prompt: |
+  You are a helpful assistant built with the ADK framework.
+  Answer questions clearly and concisely.
+  If you don't know something, say so honestly.
+
+tools: []
+config: {}

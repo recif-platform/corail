@@ -1,0 +1,15 @@
+artifact_path: /Users/adham/Projects/agentic-platform-opensource/corail/mlruns/0/models/m-bc16764ff38b4d728f942498d29f48d4/artifacts
+flavors: {}
+is_signature_from_type_hint: false
+metadata:
+  mlflow.model.isExternal: true
+mlflow_version: 3.10.1
+model_id: m-bc16764ff38b4d728f942498d29f48d4
+model_uuid: m-bc16764ff38b4d728f942498d29f48d4
+prompts: null
+signature:
+  inputs: '[{"type": "boolean", "required": true}]'
+  outputs: '[{"type": "boolean", "required": true}]'
+  params: null
+type_hint_from_example: false
+utc_time_created: '2026-04-15 12:14:59.446321'
