@@ -1,0 +1,99 @@
+[project]
+name = "corail"
+version = "0.1.0"
+description = "Open-source AI agent runtime — framework adapters, channel normalization, and evaluation engine."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "asyncpg>=0.31.0",
+    "click>=8.3.1",
+    "ddgs>=9.11.4",
+    "fastapi>=0.135.1",
+    "grpcio>=1.78.0",
+    "protobuf>=5.29.0",
+    "httpx>=0.28.1",
+    "pgvector>=0.4.2",
+    "pydantic-settings>=2.13.1",
+    "python-ulid>=3.1.0",
+    "sqlalchemy>=2.0.48",
+    "structlog>=25.5.0",
+    "uvicorn>=0.41.0",
+    "mlflow[genai]>=3.10.0",
+    "discord.py>=2.3.0",
+]
+
+[project.optional-dependencies]
+vertex = ["PyJWT[crypto]>=2.9.0"]
+
+[project.scripts]
+corail = "corail.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["corail"]
+
+[tool.uv]
+package = true
+
+[tool.uv.sources]
+
+[dependency-groups]
+dev = [
+    "bandit>=1.9.4",
+    "grpcio-tools>=1.78.0",
+    "mypy>=1.19.1",
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.0.0",
+    "pytest-mock>=3.15.1",
+    "ruff>=0.15.6",
+]
+
+# --- Ruff ---
+[tool.ruff]
+line-length = 120
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "S", "B", "A", "C4", "DTZ", "T20", "ICN", "PIE", "PT", "RSE", "RET", "SLF", "SIM", "TID", "TCH", "ARG", "ERA", "PLC", "PLE", "PLR", "PLW", "FLY", "PERF", "RUF"]
+ignore = ["S101", "PLR2004", "PLR0913"]
+per-file-ignores = {"alembic/*" = ["PLC0415"], "corail/adapters/factory.py" = ["PLC0415"], "corail/adapters/llms/stub.py" = ["ARG002"], "corail/api/websocket.py" = ["TCH001"], "corail/cli.py" = ["PLC0415"], "corail/control/pb/*" = ["ALL"], "corail/control/grpc_servicer.py" = ["N802", "ARG002", "SLF001"], "corail/models/*.py" = ["ARG002", "ARG004", "PLC0415"], "tests/*" = ["ARG002", "SLF001"]}
+
+[tool.ruff.lint.isort]
+known-first-party = ["corail"]
+
+# --- Mypy ---
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = ["asyncpg.*", "pgvector.*", "grpc.*", "google.protobuf.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["corail.control.pb.*"]
+ignore_errors = true
+
+# --- Pytest ---
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+# --- Coverage ---
+[tool.coverage.run]
+source = ["corail"]
+
+[tool.coverage.report]
+fail_under = 80
+
+# --- Bandit ---
+[tool.bandit]
+exclude_dirs = ["tests"]

@@ -1,0 +1,19 @@
+# Custom Framework Agent Example
+# Demonstrates implementing a custom FrameworkAdapter
+
+name: "custom-example"
+framework: "adk"
+description: "A custom agent showing how to extend the platform."
+version: "0.1.0"
+
+model: "gpt-4"
+llm_provider: "openai"
+temperature: 0.5
+
+system_prompt: |
+  You are a specialized assistant for technical questions.
+  Provide detailed, accurate answers with code examples when relevant.
+
+tools: []
+config:
+  custom_setting: "example_value"
