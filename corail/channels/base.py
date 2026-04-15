@@ -12,6 +12,7 @@ from corail.core.pipeline import Pipeline
 
 try:
     import mlflow
+
     from corail.tracing.mlflow_listener import get_collected_events, reset_events
     _HAS_MLFLOW = True
 except ImportError:

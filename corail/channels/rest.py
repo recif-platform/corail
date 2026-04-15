@@ -19,9 +19,6 @@ try:
 except ImportError:
     _HAS_MLFLOW = False
 
-from corail.channels.base import get_collected_events, reset_events
-
-
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse, StreamingResponse
@@ -29,7 +26,7 @@ from pydantic import BaseModel, Field
 from starlette.middleware.cors import CORSMiddleware
 
 from corail import __version__
-from corail.channels.base import Channel
+from corail.channels.base import Channel, get_collected_events, reset_events
 from corail.config import Settings
 from corail.core.pipeline import Pipeline
 from corail.core.stream import StreamEvent, StreamToken

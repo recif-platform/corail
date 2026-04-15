@@ -12,7 +12,7 @@ import json
 import logging
 import re
 import uuid
-from collections.abc import AsyncGenerator, Callable, Awaitable
+from collections.abc import AsyncGenerator, Awaitable, Callable
 from typing import TYPE_CHECKING, Any
 
 from corail.core.stream import StreamEvent, StreamToken

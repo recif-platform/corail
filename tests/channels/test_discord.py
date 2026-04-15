@@ -7,7 +7,6 @@ import pytest
 from corail.channels.discord import DiscordChannel
 from corail.config import Settings
 from corail.core.pipeline import Pipeline
-from corail.core.stream import StreamEvent
 from corail.storage.memory import MemoryStorage
 
 

@@ -1,6 +1,6 @@
 """Tests for Channel base class — especially log_chat_trace."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
