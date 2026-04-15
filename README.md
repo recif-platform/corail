@@ -146,6 +146,45 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ---
 
+## Roadmap
+
+### Runtime Core
+
+| Feature | Status | Description |
+|---------|:------:|-------------|
+| 7 LLM providers | 🟢 | OpenAI, Anthropic, Vertex AI (native), Google AI, Ollama, Bedrock, Stub |
+| Multi-channel I/O | 🟢 | REST + SSE, WebSocket, Slack, Google Chat, CLI |
+| Tool registry | 🟢 | HTTP, CLI, MCP, builtins. Declarative JSON/CRD config |
+| Agentic RAG | 🟢 | pgvector retrieval, semantic chunking, KB priority rules |
+| Memory + storage | 🟢 | In-memory or PostgreSQL, conversation persistence |
+| Guards | 🟢 | Prompt injection detection, PII masking, secret blocking |
+| Eval scorers | 🟢 | 14 MLflow GenAI scorers, auto-eval on production traces |
+| AG-UI rendering | 🟢 | Structured content: charts, code, tables, HTML preview |
+
+### Strategies
+
+| Strategy | Status | Description |
+|----------|:------:|-------------|
+| `simple` | 🟢 | Single-turn, no tool use |
+| `agent-react` | 🟢 | ReAct loop with native tool calling |
+| `react-v2` | 🟢 | Prompt-based tool calling (for models without native support) |
+| `rag` | 🟢 | Retrieval-augmented generation with KB search |
+| `assistant` | 🟠 | Autonomous assistant — task planning, multi-step execution, self-correction, parallel tool use. Inspired by OpenClaw/Claude Code. |
+
+### Planned
+
+| Feature | Status | Description |
+|---------|:------:|-------------|
+| Streaming tool calls | 🟡 | Stream tool results as they complete (not wait for all) |
+| Agent-to-agent delegation | 🔴 | One agent delegates subtasks to specialized agents |
+| Long-running tasks | 🔴 | Background task execution with progress callbacks |
+| Plugin system | 🔴 | Third-party strategy/channel/tool plugins via entry points |
+| Voice channel | 🔴 | Real-time voice I/O with speech-to-text and text-to-speech |
+
+> 🟢 Done  🟠 In progress  🟡 Designed  🔴 Planned
+
+---
+
 ## Contributing
 
 1. Fork the repository
