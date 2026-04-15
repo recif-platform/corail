@@ -54,7 +54,9 @@ class TestLogChatTrace:
                 result = await channel.log_chat_trace("hello", "conv-1", "response")
         assert result is None
 
-    def test_sync_log_returns_none_when_mlflow_unavailable(self, channel: ConcreteChannel) -> None:
+    def test_sync_log_returns_none_when_mlflow_unavailable(self) -> None:
+        from corail.channels.base import sync_log_chat_trace
+
         with patch("corail.channels.base._HAS_MLFLOW", False):
-            result = channel._sync_log_chat_trace("hello", "conv-1", "response")
+            result = sync_log_chat_trace("hello", "conv-1", "response")
         assert result is None

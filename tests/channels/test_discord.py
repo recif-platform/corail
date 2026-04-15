@@ -46,7 +46,7 @@ class TestHandleChat:
         interaction = MagicMock()
         interaction.user.id = 42
         interaction.response.defer = AsyncMock()
-        interaction.followup.send = AsyncMock(return_value=MagicMock())
+        interaction.followup.send = AsyncMock(return_value=AsyncMock())
 
         with patch.object(channel, "log_chat_trace", new_callable=AsyncMock) as mock_trace:
             with patch("corail.channels.discord.reset_events"):
@@ -62,7 +62,7 @@ class TestHandleChat:
         interaction = MagicMock()
         interaction.user.id = 99
         interaction.response.defer = AsyncMock()
-        interaction.followup.send = AsyncMock(return_value=MagicMock())
+        interaction.followup.send = AsyncMock(return_value=AsyncMock())
 
         with patch.object(channel, "log_chat_trace", new_callable=AsyncMock):
             with patch("corail.channels.discord.reset_events"):
@@ -83,7 +83,7 @@ class TestHandleChat:
         interaction = MagicMock()
         interaction.user.id = 1
         interaction.response.defer = AsyncMock()
-        interaction.followup.send = AsyncMock(return_value=MagicMock())
+        interaction.followup.send = AsyncMock(return_value=AsyncMock())
 
         with patch.object(channel, "log_chat_trace", new_callable=AsyncMock):
             with patch("corail.channels.discord.reset_events"):
