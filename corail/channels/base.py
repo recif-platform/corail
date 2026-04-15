@@ -1,5 +1,6 @@
 """Channel abstract base class."""
 
+import asyncio
 import os
 from abc import ABC, abstractmethod
 
@@ -37,14 +38,36 @@ class Channel(ABC):
         """Stop the channel gracefully."""
         ...
 
-    def log_chat_trace(
+    async def log_chat_trace(
         self,
         user_input: str,
         conversation_id: str,
         full_response: str,
         collected_events: list[dict] | None = None,
     ) -> str | None:
-        """Log a chat interaction as an MLflow trace. Returns trace_id or None."""
+        """Log a chat interaction as an MLflow trace. Returns trace_id or None.
+
+        Runs the MLflow trace synchronously in a thread (MLflow uses thread-local
+        storage and must not be called directly from an async context).
+        """
+        if not _HAS_MLFLOW:
+            return None
+        try:
+            return await asyncio.wait_for(
+                asyncio.to_thread(self._sync_log_chat_trace, user_input, conversation_id, full_response, collected_events),
+                timeout=5.0,
+            )
+        except Exception:
+            return None
+
+    def _sync_log_chat_trace(
+        self,
+        user_input: str,
+        conversation_id: str,
+        full_response: str,
+        collected_events: list[dict] | None = None,
+    ) -> str | None:
+        """Synchronous MLflow trace — called via asyncio.to_thread from log_chat_trace."""
         if not _HAS_MLFLOW:
             return None
         try:

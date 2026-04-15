@@ -361,15 +361,10 @@ class RestChannel(Channel):
                     _events = list(get_collected_events())
                     reset_events()
                     try:
-                        tid = await asyncio.wait_for(
-                            asyncio.to_thread(self.log_chat_trace, user_input, cid, _clean, _events),
-                            timeout=5.0,
-                        )
+                        tid = await self.log_chat_trace(user_input, cid, _clean, _events)
                         if tid:
                             trace_info["trace_id"] = tid
                             await queue.put({"_trace_id": tid})
-                    except TimeoutError:
-                        logger.debug("MLflow trace logging timed out")
                     except Exception:
                         pass
 

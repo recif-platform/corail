@@ -206,7 +206,7 @@ class DiscordChannel(Channel):
             await self.storage.append_message(cid, "assistant", clean)
 
             # Trace to MLflow (same as REST channel — logic lives in Channel base class).
-            self.log_chat_trace(message, cid, clean, get_collected_events())
+            await self.log_chat_trace(message, cid, clean, get_collected_events())
 
         except Exception as exc:
             logger.exception("Discord chat error for user %s", interaction.user)
