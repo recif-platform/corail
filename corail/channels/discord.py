@@ -8,7 +8,7 @@ import re
 import discord
 from discord import app_commands
 
-from corail.channels.base import Channel
+from corail.channels.base import Channel, get_collected_events, reset_events
 from corail.config import Settings
 from corail.core.pipeline import Pipeline
 from corail.core.stream import StreamEvent
@@ -143,6 +143,7 @@ class DiscordChannel(Channel):
         last_edit = 0.0
         sources: list[dict] = []
 
+        reset_events()
         try:
             async for token in self.pipeline.execute_stream(
                 message,
@@ -203,6 +204,9 @@ class DiscordChannel(Channel):
 
             # Persist.
             await self.storage.append_message(cid, "assistant", clean)
+
+            # Trace to MLflow (same as REST channel — logic lives in Channel base class).
+            self.log_chat_trace(message, cid, clean, get_collected_events())
 
         except Exception as exc:
             logger.exception("Discord chat error for user %s", interaction.user)

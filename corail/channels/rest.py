@@ -19,94 +19,7 @@ try:
 except ImportError:
     _HAS_MLFLOW = False
 
-try:
-    from corail.tracing.mlflow_listener import get_collected_events, reset_events
-except ImportError:
-
-    def get_collected_events() -> list:
-        return []
-
-    def reset_events() -> None:
-        pass
-
-
-def _set_mlflow_model() -> None:
-    """Re-assert active model in trace context (may be lost across async boundaries)."""
-    _agent_name = os.environ.get("CORAIL_AGENT_NAME", "default")
-    _agent_version = os.environ.get("RECIF_AGENT_VERSION", "unknown")
-    safe_version = _agent_version.replace(".", "-")
-    mlflow.set_active_model(name=f"{_agent_name}-v{safe_version}")
-
-
-def _log_chat_trace(
-    user_input: str,
-    conversation_id: str,
-    history_length: int,
-    clean_output: str,
-    raw_output: str,
-    collected_events: list[dict] | None = None,
-) -> str | None:
-    """Log a streaming chat trace with child spans reconstructed from events.
-
-    Returns the MLflow trace_id for feedback linking.
-    """
-    if not _HAS_MLFLOW:
-        return None
-    collected = collected_events or []
-    _set_mlflow_model()
-
-    @mlflow.trace(name="chat_stream", span_type="AGENT")
-    def _trace_fn(user_input: str, conversation_id: str, history_length: int) -> str:
-        _version = os.environ.get("RECIF_AGENT_VERSION", "unknown")
-        _agent = os.environ.get("CORAIL_AGENT_NAME", "default")
-        mlflow.update_current_trace(
-            tags={
-                "agent_type": "corail",
-                "conversation_id": conversation_id,
-                "recif.agent_version": _version,
-                "recif.agent_name": _agent,
-            },
-            metadata={"mlflow.trace.session": conversation_id, "mlflow.trace.user": "default"},
-        )
-
-        # Reconstruct child spans from collected events.
-        # tool_call events carry args, tool_result events carry output — pair them by name.
-        pending_args: dict[str, dict] = {}
-        for evt in collected:
-            etype = evt.get("type", "")
-            if etype == "llm_call_completed":
-                with mlflow.start_span(name=f"llm_call_{evt.get('round', 0)}", span_type="CHAT_MODEL"):
-                    mlflow.get_current_active_span().set_attributes({"stop_reason": evt.get("stop_reason", "")})
-            elif etype == "tool_call":
-                pending_args[evt.get("name", "")] = evt.get("args", {})
-            elif etype == "tool_result":
-                name = evt.get("name", "?")
-                span_type = "RETRIEVER" if name.startswith("search_") else "TOOL"
-                with mlflow.start_span(name=f"tool:{name}", span_type=span_type):
-                    span = mlflow.get_current_active_span()
-                    span.set_inputs({"tool": name, "args": pending_args.pop(name, {})})
-                    span.set_outputs({"output": evt.get("output", "")[:500], "success": True})
-            elif etype == "tool_error":
-                name = evt.get("name", "?")
-                with mlflow.start_span(name=f"tool:{name}", span_type="TOOL"):
-                    span = mlflow.get_current_active_span()
-                    span.set_inputs({"tool": name, "args": pending_args.pop(name, {})})
-                    span.set_outputs({"error": evt.get("error", "")})
-                    span.set_status("ERROR")
-            elif etype == "guard_blocked":
-                with mlflow.start_span(name="guard_blocked", span_type="CHAIN"):
-                    mlflow.get_current_active_span().set_attributes(
-                        {"direction": evt.get("direction", ""), "reason": evt.get("reason", "")}
-                    )
-
-        return clean_output
-
-    _trace_fn(user_input, conversation_id, history_length)
-    try:
-        trace_id = mlflow.get_last_active_trace()
-        return trace_id.info.trace_id if trace_id else None
-    except Exception:
-        return None
+from corail.channels.base import get_collected_events, reset_events
 
 
 import uvicorn
@@ -379,7 +292,9 @@ class RestChannel(Channel):
         """Run pipeline.execute inside an MLflow root span."""
         if not _HAS_MLFLOW:
             return await self.pipeline.execute(user_input, history=history, **options)
-        _set_mlflow_model()
+        _agent = os.environ.get("CORAIL_AGENT_NAME", "default")
+        _ver = os.environ.get("RECIF_AGENT_VERSION", "unknown").replace(".", "-")
+        mlflow.set_active_model(name=f"{_agent}-v{_ver}")
         with mlflow.start_span(name="chat", span_type="AGENT") as root:
             mlflow.update_current_trace(
                 tags={"agent_type": "corail", "conversation_id": cid},
@@ -440,16 +355,14 @@ class RestChannel(Channel):
                     if is_first_exchange:
                         await self._set_title(cid, user_input)
 
-                # Log trace synchronously (with timeout) so trace_id is available for SSE
-                if _HAS_MLFLOW and full_response:
+                # Log trace — logic lives in Channel base class, shared with all channels.
+                if full_response:
                     _clean = re.sub(r"<think>.*?</think>", "", full_response, flags=re.DOTALL).strip()
                     _events = list(get_collected_events())
                     reset_events()
                     try:
                         tid = await asyncio.wait_for(
-                            asyncio.to_thread(
-                                _log_chat_trace, user_input, cid, len(history), _clean, full_response, _events
-                            ),
+                            asyncio.to_thread(self.log_chat_trace, user_input, cid, _clean, _events),
                             timeout=5.0,
                         )
                         if tid:
