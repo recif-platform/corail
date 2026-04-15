@@ -152,7 +152,7 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 | Feature | Status | Description |
 |---------|:------:|-------------|
-| 7 LLM providers | 🟢 | OpenAI, Anthropic, Vertex AI (native), Google AI, Ollama, Bedrock, Stub |
+| LLM providers (7) | 🟡 | Vertex AI + Ollama tested in prod. OpenAI, Anthropic, Google AI, Bedrock, Stub implemented but not battle-tested |
 | Multi-channel I/O | 🟢 | REST + SSE, WebSocket, Slack, Google Chat, CLI |
 | Tool registry | 🟢 | HTTP, CLI, MCP, builtins. Declarative JSON/CRD config |
 | Agentic RAG | 🟢 | pgvector retrieval, semantic chunking, KB priority rules |
