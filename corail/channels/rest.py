@@ -34,7 +34,8 @@ def _set_mlflow_model() -> None:
     """Re-assert active model in trace context (may be lost across async boundaries)."""
     _agent_name = os.environ.get("CORAIL_AGENT_NAME", "default")
     _agent_version = os.environ.get("RECIF_AGENT_VERSION", "unknown")
-    mlflow.set_active_model(name=f"{_agent_name}-v{_agent_version}")
+    safe_version = _agent_version.replace(".", "-")
+    mlflow.set_active_model(name=f"{_agent_name}-v{safe_version}")
 
 
 def _log_chat_trace(
