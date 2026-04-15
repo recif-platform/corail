@@ -63,14 +63,29 @@ class DiscordChannel(Channel):
         super().__init__(pipeline, settings)
 
         self._storage: StoragePort | None = None
+        self._trace_map: dict[int, str] = {}  # response message_id → MLflow trace_id
 
         intents = discord.Intents.default()
         intents.message_content = True
+        intents.reactions = True
 
         self.bot = discord.Client(intents=intents)
         self.tree = app_commands.CommandTree(self.bot)
 
         # --- Events ---
+
+        @self.bot.event
+        async def on_raw_reaction_add(payload: discord.RawReactionActionEvent) -> None:
+            if self.bot.user and payload.user_id == self.bot.user.id:
+                return  # ignore the bot's own reactions
+            trace_id = self._trace_map.get(payload.message_id)
+            if not trace_id:
+                return
+            emoji = str(payload.emoji)
+            if emoji == "👍":
+                self.log_feedback(trace_id, True)
+            elif emoji == "👎":
+                self.log_feedback(trace_id, False)
 
         @self.bot.event
         async def on_ready() -> None:
@@ -205,8 +220,17 @@ class DiscordChannel(Channel):
             # Persist.
             await self.storage.append_message(cid, "assistant", clean)
 
-            # Trace to MLflow (same as REST channel — logic lives in Channel base class).
-            await self.log_chat_trace(message, cid, clean, get_collected_events())
+            # Trace to MLflow and attach 👍/👎 reactions so users can rate the response.
+            trace_id = await self.log_chat_trace(message, cid, clean, get_collected_events())
+            logger.info("MLflow trace_id for message: %s", trace_id)
+            if trace_id and response_msg is not None:
+                self._trace_map[response_msg.id] = trace_id
+                try:
+                    await response_msg.add_reaction("👍")
+                    await response_msg.add_reaction("👎")
+                    logger.info("Reactions added to message %s", response_msg.id)
+                except Exception as e:
+                    logger.warning("Failed to add reactions: %s", e)
 
         except Exception as exc:
             logger.exception("Discord chat error for user %s", interaction.user)
@@ -249,30 +273,6 @@ class DiscordChannel(Channel):
     # Lifecycle
     # ------------------------------------------------------------------
 
-    def _start_health_server(self) -> None:
-        """Tiny HTTP server on port 8000 so K8s liveness/readiness probes pass.
-
-        The Discord channel doesn't serve HTTP like REST does, but the operator
-        configures health probes on 8000 for all agents. This avoids needing
-        special-case probe config per channel type.
-        """
-        import http.server
-        import threading
-
-        class _Handler(http.server.BaseHTTPRequestHandler):
-            def do_GET(self) -> None:
-                self.send_response(200)
-                self.end_headers()
-                self.wfile.write(b'{"status":"ok"}')
-
-            def log_message(self, *_args: object) -> None:
-                pass  # suppress access logs
-
-        server = http.server.HTTPServer(("0.0.0.0", 8000), _Handler)
-        t = threading.Thread(target=server.serve_forever, daemon=True, name="health-8000")
-        t.start()
-        logger.info("health endpoint listening on :8000")
-
     def start(self) -> None:
         token = os.environ.get("DISCORD_BOT_TOKEN")
         if not token:
@@ -280,7 +280,6 @@ class DiscordChannel(Channel):
                 "DISCORD_BOT_TOKEN env var not set. Create a bot at "
                 "https://discord.com/developers/applications and set the token."
             )
-        self._start_health_server()
         logger.info("Starting Discord bot…")
         self.bot.run(token, log_handler=None)
 

@@ -198,6 +198,11 @@ class ControlServer:
         return JSONResponse(result)
 
     async def _chat_stream(self, request: ChatRequest) -> StreamingResponse:
+        from corail.channels.base import log_chat_trace as _log_trace
+
+        async def _on_complete(input_text: str, cid: str, response: str, events: list) -> None:
+            await _log_trace(input_text, cid, response, events, channel_name="control")
+
         _cid, generator = await handle_chat_stream(
             self._pipeline,
             self.storage,
@@ -206,6 +211,7 @@ class ControlServer:
             request.options,
             active_generations=self._active_generations,
             bg_tasks=self._bg_tasks,
+            on_complete=_on_complete,
         )
         return StreamingResponse(generator, media_type="text/event-stream")
 

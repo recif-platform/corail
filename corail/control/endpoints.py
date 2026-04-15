@@ -12,7 +12,7 @@ import json
 import logging
 import re
 import uuid
-from collections.abc import AsyncGenerator
+from collections.abc import AsyncGenerator, Callable, Awaitable
 from typing import TYPE_CHECKING, Any
 
 from corail.core.stream import StreamEvent, StreamToken
@@ -106,6 +106,7 @@ async def handle_chat_stream(
     options: dict[str, Any] | None = None,
     active_generations: dict[str, str] | None = None,
     bg_tasks: set[asyncio.Task] | None = None,
+    on_complete: Callable[[str, str, str, list], Awaitable[None]] | None = None,
 ) -> tuple[str, AsyncGenerator[str]]:
     """Set up streaming chat. Returns (conversation_id, sse_generator).
 
@@ -125,6 +126,8 @@ async def handle_chat_stream(
     active_generations[cid] = ""
 
     async def _collect() -> None:
+        from corail.channels.base import get_collected_events, reset_events
+        reset_events()
         full_response = ""
         try:
             async for token in pipeline.execute_stream(input_text, history=history, **options):
@@ -144,6 +147,11 @@ async def handle_chat_stream(
                 await storage.append_message(cid, "assistant", clean or full_response)
                 if is_first_exchange:
                     await set_title(storage, cid, input_text)
+                if on_complete:
+                    try:
+                        await on_complete(input_text, cid, clean or full_response, get_collected_events())
+                    except Exception:
+                        pass
 
     task = asyncio.create_task(_collect())
     bg_tasks.add(task)

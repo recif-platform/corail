@@ -168,6 +168,21 @@ def main(
     control_thread.start()
     click.echo("  Control:  port 8001 (evaluation, status, config)")
 
+    # Non-REST channels (e.g. Discord) don't serve HTTP on port 8000 themselves.
+    # The Récif API proxy calls /control/* on port 8000 for all agent types, so
+    # we bind the same ControlServer app on port 8000 too (no duplicate gRPC).
+    if settings.channel != "rest":
+        import uvicorn as _uvicorn
+
+        threading.Thread(
+            target=_uvicorn.run,
+            args=(control_server.app,),
+            kwargs={"host": "0.0.0.0", "port": 8000, "log_level": "error"},
+            daemon=True,
+            name="control-proxy-8000",
+        ).start()
+        click.echo("  Proxy:    port 8000 (Récif API → ControlServer)")
+
     # Channel server on port 8000 (user-facing: chat, conversations, memory)
     channel_impl = ChannelFactory.create(settings.channel, pipeline, settings)
     channel_impl.start()
