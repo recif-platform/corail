@@ -166,7 +166,7 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 | Strategy | Status | Description |
 |----------|:------:|-------------|
 | `simple` | 🟢 | Single-turn, no tool use |
-| `agent-react` | 🟢 | ReAct loop with native tool calling |
+| `agent-react` | 🟡 | ReAct loop with native tool calling. Works but needs hardening (retry logic, edge cases). |
 | `react-v2` | 🟢 | Prompt-based tool calling (for models without native support) |
 | `rag` | 🟢 | Retrieval-augmented generation with KB search |
 | `assistant` | 🟠 | Autonomous assistant — task planning, multi-step execution, self-correction, parallel tool use. Inspired by OpenClaw/Claude Code. |
