@@ -169,7 +169,7 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 | `agent-react` | 🟡 | ReAct loop with native tool calling. Works but needs hardening (retry logic, edge cases). |
 | `react-v2` | 🟢 | Prompt-based tool calling (for models without native support) |
 | `rag` | 🟢 | Retrieval-augmented generation with KB search |
-| `assistant` | 🟠 | Autonomous assistant — task planning, multi-step execution, self-correction, parallel tool use. Inspired by OpenClaw/Claude Code. |
+| `assistant` | 🟠 | Autonomous assistant — task planning, multi-step execution, self-correction, parallel tool use. Self-improving agent that learns from interactions. Inspired by OpenClaw/Claude Code. The core is intentionally kept simple for now — the real intelligence layer is the next big milestone. |
 
 ### Planned
 
