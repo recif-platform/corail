@@ -114,6 +114,7 @@ class TestStartRequiresToken:
         with patch.dict("os.environ", {}, clear=True):
             # Remove DISCORD_BOT_TOKEN from env
             import os
+
             os.environ.pop("DISCORD_BOT_TOKEN", None)
             with pytest.raises(ValueError, match="DISCORD_BOT_TOKEN"):
                 channel.start()

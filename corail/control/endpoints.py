@@ -127,6 +127,7 @@ async def handle_chat_stream(
 
     async def _collect() -> None:
         from corail.channels.base import get_collected_events, reset_events
+
         reset_events()
         full_response = ""
         try:

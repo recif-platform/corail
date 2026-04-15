@@ -14,6 +14,7 @@ try:
     import mlflow
 
     from corail.tracing.mlflow_listener import get_collected_events, reset_events
+
     _HAS_MLFLOW = True
 except ImportError:
     _HAS_MLFLOW = False
@@ -114,7 +115,9 @@ async def log_chat_trace(
         return None
     try:
         return await asyncio.wait_for(
-            asyncio.to_thread(sync_log_chat_trace, user_input, conversation_id, full_response, collected_events, channel_name),
+            asyncio.to_thread(
+                sync_log_chat_trace, user_input, conversation_id, full_response, collected_events, channel_name
+            ),
             timeout=5.0,
         )
     except Exception as e:
@@ -156,6 +159,7 @@ class Channel(ABC):
             return
         try:
             from mlflow.entities import AssessmentSource
+
             mlflow.log_feedback(
                 trace_id=trace_id,
                 name="user_rating",
