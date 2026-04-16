@@ -84,7 +84,7 @@ def main(
                         mlflow.set_tracking_uri(mlflow_uri)
                         mlflow.set_experiment(f"recif/agents/{agent_name}")
                         mlflow.tracing.enable()
-                        mlflow.set_active_model(name=agent_name, version=artifact_version)
+                        mlflow.set_active_model(name=agent_name)
                         mlflow_ready.set()
                         if attempt > 1:
                             click.echo(f"  MLflow:   connected after {attempt} attempts")
