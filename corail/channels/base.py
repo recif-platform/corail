@@ -41,8 +41,8 @@ def sync_log_chat_trace(
         return None
     try:
         agent_name = os.environ.get("CORAIL_AGENT_NAME", "default")
-        agent_version = os.environ.get("RECIF_AGENT_VERSION", "unknown")
-        mlflow.set_active_model(name=f"{agent_name}/v{agent_version}")
+        agent_version = os.environ.get("RECIF_AGENT_VERSION", "unknown").replace(".", "-")
+        mlflow.set_active_model(name=f"{agent_name}-v{agent_version}")
 
         collected = collected_events or []
         trace_id_holder: list[str | None] = [None]
