@@ -140,15 +140,14 @@ def main(
                 _system_prompt = os.environ.get("CORAIL_SYSTEM_PROMPT", "")
                 if _system_prompt and not _prompt_ref:
                     try:
-                        from corail.tracing.mlflow_tracer import register_prompt
-
-                        register_prompt(
+                        mlflow.genai.register_prompt(
                             name=f"{agent_name}--system-prompt",
                             template=_system_prompt,
                             commit_message=f"v{artifact_version}",
                         )
-                    except Exception:
-                        pass
+                        click.echo(f"  Prompt:   registered in MLflow as {agent_name}--system-prompt")
+                    except Exception as _pe:
+                        click.echo(f"  Prompt:   registration failed ({_pe})")
             else:
                 click.echo("  MLflow:   retrying in background (will connect once server is up)...")
 
