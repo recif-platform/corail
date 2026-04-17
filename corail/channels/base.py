@@ -44,9 +44,8 @@ def sync_log_chat_trace(
         agent_version = os.environ.get("RECIF_AGENT_VERSION", "unknown").replace(".", "-")
         try:
             mlflow.set_active_model(name=f"{agent_name}-v{agent_version}")
-        except Exception:
-            # Graceful fallback — traces still work, just not linked to model version
-            pass
+        except Exception as e:
+            logger.warning("Failed to set active MLflow model: %s", e)
 
         collected = collected_events or []
         trace_id_holder: list[str | None] = [None]
