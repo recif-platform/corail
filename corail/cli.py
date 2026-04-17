@@ -81,17 +81,17 @@ def main(
                 import urllib.request
 
                 url = f"{mlflow_uri}/api/2.0/mlflow/experiments/get-by-name?experiment_name={urllib.parse.quote(experiment_name)}"
-                resp = urllib.request.urlopen(url)  # noqa: S310
+                resp = urllib.request.urlopen(url)  # noqa: S310  # nosec B310
                 data = _json.loads(resp.read())
                 exp_id = data.get("experiment", {}).get("experiment_id")
                 if exp_id:
-                    req = urllib.request.Request(  # noqa: S310
+                    req = urllib.request.Request(  # noqa: S310  # nosec B310
                         f"{mlflow_uri}/api/2.0/mlflow/experiments/restore",
                         data=_json.dumps({"experiment_id": exp_id}).encode(),
                         headers={"Content-Type": "application/json"},
                         method="POST",
                     )
-                    urllib.request.urlopen(req)  # noqa: S310
+                    urllib.request.urlopen(req)  # noqa: S310  # nosec B310
 
             def _init_mlflow():
 
