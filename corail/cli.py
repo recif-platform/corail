@@ -122,9 +122,11 @@ def main(
                         mlflow.tracing.enable()
                         mlflow.set_active_model(name=f"{agent_name}-v{artifact_version.replace('.', '-')}")
 
-                        # Register system prompt in MLflow Prompt Registry
+                        # Register inline system prompt in MLflow Prompt Registry
+                        # (skip if using promptRef — the prompt is already in the registry)
+                        _prompt_ref = os.environ.get("CORAIL_PROMPT_REF", "")
                         system_prompt = os.environ.get("CORAIL_SYSTEM_PROMPT", "")
-                        if system_prompt:
+                        if system_prompt and not _prompt_ref:
                             try:
                                 from corail.tracing.mlflow_tracer import register_prompt
 
@@ -182,6 +184,17 @@ def main(
             )
         except Exception as e:
             click.echo(f"  MLflow:   disabled ({e})")
+
+    # Resolve prompt from MLflow Prompt Registry (or fall back to inline)
+    prompt_ref = os.environ.get("CORAIL_PROMPT_REF", "")
+    if prompt_ref:
+        from corail.prompts import resolve_prompt
+
+        resolved = resolve_prompt(prompt_ref, fallback=settings.system_prompt)
+        settings.system_prompt = resolved
+        click.echo(f"  Prompt:   {prompt_ref} → {len(resolved)} chars")
+    elif settings.system_prompt:
+        click.echo(f"  Prompt:   inline ({len(settings.system_prompt)} chars)")
 
     model = ModelFactory.create(settings.model_type, settings.model_id)
     extra_kwargs = build_strategy_kwargs(settings)
