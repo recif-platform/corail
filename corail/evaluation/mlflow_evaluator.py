@@ -121,7 +121,33 @@ class MLflowEvaluator:
     """
 
     def __init__(self, judge_model: str | None = None) -> None:
-        self._judge_model = judge_model or os.environ.get("RECIF_JUDGE_MODEL", "vertex_ai:/gemini-2.5-pro")
+        default = os.environ.get("RECIF_JUDGE_MODEL", "vertex_ai:/gemini-2.5-flash")
+        self._judge_model = judge_model or default
+        self._patch_vertex_project()
+
+    @staticmethod
+    def _patch_vertex_project() -> None:
+        """Ensure MLflow Vertex AI gateway reads project and location from env vars."""
+        project = os.environ.get("GOOGLE_CLOUD_PROJECT", "")
+        location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+        if not project:
+            return
+        try:
+            from mlflow.gateway.providers.vertex_ai import VertexAIProvider
+
+            _orig_base_url = VertexAIProvider.base_url.fget  # type: ignore[attr-defined]
+
+            @property  # type: ignore[misc]
+            def _patched_base_url(self: VertexAIProvider) -> str:
+                if not self.vertex_config.vertex_project:
+                    self.vertex_config.vertex_project = project
+                if not self.vertex_config.vertex_location:
+                    self.vertex_config.vertex_location = location
+                return _orig_base_url(self)
+
+            VertexAIProvider.base_url = _patched_base_url  # type: ignore[assignment]
+        except Exception:
+            pass  # MLflow version without gateway — skip
 
     async def evaluate(
         self,

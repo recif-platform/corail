@@ -925,6 +925,7 @@ class UnifiedAgentStrategy(AgentStrategy):
             channel="rest",
             grounding_strict=self._grounding_strict,
             has_kb_tools=any(n.startswith("search_") for n in self.tools.names()),
+            has_tools=len(self.tools) > 0,
         )
 
     def _build_messages(

@@ -105,7 +105,7 @@ def _extract_vertex_text(data: dict) -> str:
     candidates = data.get("candidates") or []
     if not candidates:
         logger.warning("Vertex response has no candidates: %s", data)
-        return ""
+        return "[No response generated. Please try again.]"
     candidate = candidates[0]
     content = candidate.get("content") or {}
     parts = content.get("parts") or []
@@ -113,7 +113,9 @@ def _extract_vertex_text(data: dict) -> str:
     if not text_parts:
         finish = candidate.get("finishReason", "unknown")
         logger.warning("Vertex returned no text parts (finishReason=%s)", finish)
-        return ""
+        if finish == "SAFETY":
+            return "[Response blocked by safety filters. Please rephrase your question.]"
+        return "[No response generated. Please try again.]"
     return "".join(text_parts)
 
 

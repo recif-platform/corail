@@ -145,6 +145,20 @@ KB_PRIORITY_RULES = (
 )
 
 
+NO_TOOLS_RULES = (
+    "\n\nIMPORTANT — TOOL AVAILABILITY:\n"
+    "You do NOT have access to any tools. You cannot search the web, "
+    "fetch URLs, use calculators, or call any external API.\n"
+    "- If the user asks you to search the internet, fetch a page, or "
+    "perform any action that requires an external tool, you MUST tell "
+    "them clearly that you don't have access to those tools and that "
+    "they should ask their administrator to add them to your configuration.\n"
+    "- For questions you CAN answer from your own knowledge, answer normally.\n"
+    "- NEVER pretend to search or announce a tool call you cannot make.\n"
+    "- Always respond in the user's language."
+)
+
+
 _DEFAULT_BASE_PROMPT = "You are a helpful assistant. Respond in the user's language."
 
 
@@ -157,21 +171,25 @@ def build_system_prompt(
     channel: str = "rest",
     grounding_strict: bool = True,
     has_kb_tools: bool = False,
+    has_tools: bool = False,
 ) -> str:
     """Assemble the final system prompt the LLM will see.
 
     Layering (top to bottom):
       1. User-supplied prompt (or default base prompt if empty)
       2. KB priority rules (when knowledge base tools are registered)
-      3. Grounding rules (unless grounding_strict is False)
+      3. Grounding rules (only when tools are available — references tool calls/results)
       4. Memory context if MemoryManager is present
       5. Skill directives for the current channel
     """
     base = user_prompt or _DEFAULT_BASE_PROMPT
     if has_kb_tools:
         base += KB_PRIORITY_RULES
-    if grounding_strict:
-        base += GROUNDING_RULES
+    if has_tools:
+        if grounding_strict:
+            base += GROUNDING_RULES
+    else:
+        base += NO_TOOLS_RULES
     if memory is not None:
         if memory_context:
             base += memory_context

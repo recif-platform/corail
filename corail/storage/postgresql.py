@@ -1,5 +1,6 @@
 """PostgreSQL storage — persistent conversations across Pod restarts."""
 
+import asyncio
 import json
 import os
 
@@ -14,26 +15,32 @@ except ImportError:
 
 
 class PostgreSQLStorage(StoragePort):
-    """PostgreSQL-backed conversation storage. Survives Pod restarts and scales."""
+    """PostgreSQL-backed conversation storage. Survives Pod restarts and scales.
+
+    Pool is created lazily per event loop — safe when multiple uvicorn instances
+    share the same storage object from different threads (e.g., Discord channel
+    runs ControlServer on both port 8000 and 8001 in separate threads).
+    """
 
     def __init__(self, model_id: str = "") -> None:
         self._dsn = os.environ.get("CORAIL_DATABASE_URL", "")
-        self._pool: asyncpg.Pool | None = None
+        self._pools: dict[int, "asyncpg.Pool"] = {}
 
     async def _ensure_pool(self) -> "asyncpg.Pool":
-        if self._pool is None:
-            if not HAS_ASYNCPG:
-                msg = "asyncpg not installed. Install with: uv add asyncpg"
-                raise RuntimeError(msg)
-            self._pool = await asyncpg.create_pool(self._dsn, min_size=1, max_size=5)
-            await self._init_tables()
-        return self._pool
+        loop_id = id(asyncio.get_running_loop())
+        pool = self._pools.get(loop_id)
+        if pool is not None:
+            return pool
+        if not HAS_ASYNCPG:
+            msg = "asyncpg not installed. Install with: uv add asyncpg"
+            raise RuntimeError(msg)
+        pool = await asyncpg.create_pool(self._dsn, min_size=1, max_size=5)
+        self._pools[loop_id] = pool
+        await self._init_tables(pool)
+        return pool
 
-    async def _init_tables(self) -> None:
+    async def _init_tables(self, pool: "asyncpg.Pool") -> None:
         """Create tables if they don't exist (auto-migration for storage)."""
-        pool = self._pool
-        if pool is None:
-            return
         async with pool.acquire() as conn:
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS conversations (

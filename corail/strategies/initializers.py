@@ -160,6 +160,15 @@ def _build_tools_registry(settings: Settings) -> "ToolRegistry":
 
     try:
         for tc in json.loads(settings.tools):
+            # Short form: plain string = builtin tool name (e.g., "web_search")
+            if isinstance(tc, str):
+                try:
+                    tools.register(ToolFactory.create("builtin", name=tc))
+                except ValueError as e:
+                    logger.warning("Skipping tool '%s': %s", tc, e)
+                continue
+
+            # Full form: object with type, name, parameters, etc.
             tool_type = tc.get("type", "")
             params = [
                 ToolParameter(
