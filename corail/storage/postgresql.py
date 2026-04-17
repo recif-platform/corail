@@ -1,5 +1,7 @@
 """PostgreSQL storage — persistent conversations across Pod restarts."""
 
+from __future__ import annotations
+
 import asyncio
 import json
 import os
@@ -24,7 +26,7 @@ class PostgreSQLStorage(StoragePort):
 
     def __init__(self, model_id: str = "") -> None:
         self._dsn = os.environ.get("CORAIL_DATABASE_URL", "")
-        self._pools: dict[int, "asyncpg.Pool"] = {}
+        self._pools: dict[int, asyncpg.Pool] = {}
 
     async def _ensure_pool(self) -> "asyncpg.Pool":
         loop_id = id(asyncio.get_running_loop())
