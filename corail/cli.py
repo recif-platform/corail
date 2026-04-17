@@ -122,22 +122,6 @@ def main(
                         mlflow.tracing.enable()
                         mlflow.set_active_model(name=f"{agent_name}-v{artifact_version.replace('.', '-')}")
 
-                        # Register inline system prompt in MLflow Prompt Registry
-                        # (skip if using promptRef — the prompt is already in the registry)
-                        _prompt_ref = os.environ.get("CORAIL_PROMPT_REF", "")
-                        system_prompt = os.environ.get("CORAIL_SYSTEM_PROMPT", "")
-                        if system_prompt and not _prompt_ref:
-                            try:
-                                from corail.tracing.mlflow_tracer import register_prompt
-
-                                register_prompt(
-                                    name=f"{agent_name}--system-prompt",
-                                    template=system_prompt,
-                                    commit_message=f"v{artifact_version}",
-                                )
-                            except Exception:
-                                pass  # Prompt registry is optional
-
                         mlflow_ready.set()
                         if attempt > 1:
                             click.echo(f"  MLflow:   connected after {attempt} attempts")
@@ -151,7 +135,20 @@ def main(
             init_thread.join(timeout=10)  # Wait max 10s, then continue without blocking startup
 
             if mlflow_ready.is_set():
-                pass  # MLflow initialized successfully
+                # Register inline prompt in MLflow Prompt Registry (skip if using promptRef)
+                _prompt_ref = os.environ.get("CORAIL_PROMPT_REF", "")
+                _system_prompt = os.environ.get("CORAIL_SYSTEM_PROMPT", "")
+                if _system_prompt and not _prompt_ref:
+                    try:
+                        from corail.tracing.mlflow_tracer import register_prompt
+
+                        register_prompt(
+                            name=f"{agent_name}--system-prompt",
+                            template=_system_prompt,
+                            commit_message=f"v{artifact_version}",
+                        )
+                    except Exception:
+                        pass
             else:
                 click.echo("  MLflow:   retrying in background (will connect once server is up)...")
 
