@@ -74,17 +74,68 @@ def main(
             mlflow_ready = threading.Event()
             import time as _time
 
+            def _restore_experiment(experiment_name: str) -> None:
+                """Auto-restore a soft-deleted MLflow experiment."""
+                import json as _json
+                import urllib.parse
+                import urllib.request
+
+                url = f"{mlflow_uri}/api/2.0/mlflow/experiments/get-by-name?experiment_name={urllib.parse.quote(experiment_name)}"
+                resp = urllib.request.urlopen(url)  # noqa: S310
+                data = _json.loads(resp.read())
+                exp_id = data.get("experiment", {}).get("experiment_id")
+                if exp_id:
+                    req = urllib.request.Request(  # noqa: S310
+                        f"{mlflow_uri}/api/2.0/mlflow/experiments/restore",
+                        data=_json.dumps({"experiment_id": exp_id}).encode(),
+                        headers={"Content-Type": "application/json"},
+                        method="POST",
+                    )
+                    urllib.request.urlopen(req)  # noqa: S310
+
             def _init_mlflow():
+
                 # Retry indefinitely — MLflow may start later than the agent.
-                # Once connected, the experiment is created and tracing enabled.
                 attempt = 0
                 while not mlflow_ready.is_set():
                     attempt += 1
                     try:
                         mlflow.set_tracking_uri(mlflow_uri)
-                        mlflow.set_experiment(f"recif/agents/{agent_name}")
+
+                        # Restore Default experiment (ID 0) if deleted — MLflow uses it as fallback
+                        try:
+                            _restore_experiment("Default")
+                        except Exception:
+                            pass
+
+                        # Set agent experiment, auto-restoring if soft-deleted
+                        exp_name = f"recif/agents/{agent_name}"
+                        try:
+                            mlflow.set_experiment(exp_name)
+                        except Exception as exp_err:
+                            if "deleted" in str(exp_err).lower() or "active" in str(exp_err).lower():
+                                _restore_experiment(exp_name)
+                                mlflow.set_experiment(exp_name)
+                            else:
+                                raise
+
                         mlflow.tracing.enable()
                         mlflow.set_active_model(name=f"{agent_name}-v{artifact_version.replace('.', '-')}")
+
+                        # Register system prompt in MLflow Prompt Registry
+                        system_prompt = os.environ.get("CORAIL_SYSTEM_PROMPT", "")
+                        if system_prompt:
+                            try:
+                                from corail.tracing.mlflow_tracer import register_prompt
+
+                                register_prompt(
+                                    name=f"{agent_name}/system-prompt",
+                                    template=system_prompt,
+                                    commit_message=f"v{artifact_version}",
+                                )
+                            except Exception:
+                                pass  # Prompt registry is optional
+
                         mlflow_ready.set()
                         if attempt > 1:
                             click.echo(f"  MLflow:   connected after {attempt} attempts")
