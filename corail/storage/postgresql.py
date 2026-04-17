@@ -28,7 +28,7 @@ class PostgreSQLStorage(StoragePort):
         self._dsn = os.environ.get("CORAIL_DATABASE_URL", "")
         self._pools: dict[int, asyncpg.Pool] = {}
 
-    async def _ensure_pool(self) -> "asyncpg.Pool":
+    async def _ensure_pool(self) -> asyncpg.Pool:
         loop_id = id(asyncio.get_running_loop())
         pool = self._pools.get(loop_id)
         if pool is not None:
@@ -41,7 +41,7 @@ class PostgreSQLStorage(StoragePort):
         await self._init_tables(pool)
         return pool
 
-    async def _init_tables(self, pool: "asyncpg.Pool") -> None:
+    async def _init_tables(self, pool: asyncpg.Pool) -> None:
         """Create tables if they don't exist (auto-migration for storage)."""
         async with pool.acquire() as conn:
             await conn.execute("""
