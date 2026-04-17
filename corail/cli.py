@@ -129,7 +129,7 @@ def main(
                                 from corail.tracing.mlflow_tracer import register_prompt
 
                                 register_prompt(
-                                    name=f"{agent_name}/system-prompt",
+                                    name=f"{agent_name}--system-prompt",
                                     template=system_prompt,
                                     commit_message=f"v{artifact_version}",
                                 )

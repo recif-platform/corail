@@ -18,7 +18,7 @@ dependencies = [
     "sqlalchemy>=2.0.48",
     "structlog>=25.5.0",
     "uvicorn>=0.41.0",
-    "mlflow[genai]>=3.10.0",
+    "mlflow[genai]>=3.11.0",
     "discord.py>=2.3.0",
 ]
 
