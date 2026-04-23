@@ -11,7 +11,7 @@
 <p align="center">
   <a href="https://github.com/recif-platform/corail/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache_2.0-blue?style=flat-square" alt="License" /></a>
   <a href="https://github.com/recif-platform/corail/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/recif-platform/corail/ci.yml?style=flat-square&label=CI" alt="CI" /></a>
-  <img src="https://img.shields.io/badge/version-v0.2.0-green?style=flat-square" alt="Version" />
+  <img src="https://img.shields.io/badge/version-v0.3.0-green?style=flat-square" alt="Version" />
   <a href="https://discord.gg/P279TT4ZCp"><img src="https://img.shields.io/badge/Discord-Join-5865F2?style=flat-square&logo=discord&logoColor=white" alt="Discord" /></a>
 </p>
 
@@ -31,10 +31,6 @@ Corail is a Python runtime that powers every AI agent in the [Recif](https://git
 
 ### Install
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 ```bash
@@ -43,10 +39,6 @@ pip install corail
 
 ### Docker
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 ```bash
@@ -60,10 +52,6 @@ docker run -p 8000:8000 -p 8001:8001 \
 
 ### Chat
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 ```bash
@@ -74,10 +62,6 @@ curl -N http://localhost:8000/api/v1/agents/my-agent/chat \
 
 ### Local Development
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 ```bash
@@ -88,10 +72,6 @@ uv sync && make dev
 
 ## Key Features
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 - **7 LLM providers** -- OpenAI, Anthropic, Google AI, Vertex AI (native), Ollama, AWS Bedrock, Stub. Registry pattern with lazy loading.
@@ -107,10 +87,6 @@ uv sync && make dev
 
 ## Architecture
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 ```
@@ -149,10 +125,6 @@ uv sync && make dev
 
 ## LLM Providers
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 | Provider | `CORAIL_MODEL_TYPE` | Example Model |
@@ -169,10 +141,6 @@ uv sync && make dev
 
 ## Configuration
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 | Variable | Default | Description |
@@ -192,10 +160,6 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ## Related Repositories
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 | Repository | Description |
@@ -208,18 +172,10 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ## Roadmap
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 ### Runtime Core
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 | Feature | Status | Description |
@@ -235,10 +191,6 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ### Strategies
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 | Strategy | Status | Description |
@@ -251,10 +203,6 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ### Planned
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 | Feature | Status | Description |
@@ -271,10 +219,6 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ## Contributing
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 1. Fork the repository
@@ -289,10 +233,6 @@ Follow the existing code patterns: registry-based factories, abstract base class
 
 ## Links
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 - [Documentation](https://recif-platform.github.io/docs)
@@ -303,10 +243,6 @@ Follow the existing code patterns: registry-based factories, abstract base class
 
 ## License
 
-<p align="center">
-  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
-  <br/><em>Watch the demo (2 min)</em>
-</p>
 
 
 [Apache License 2.0](LICENSE) -- Copyright 2026 Sciences44.
