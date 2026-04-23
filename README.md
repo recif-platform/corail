@@ -23,13 +23,31 @@ Corail is a Python runtime that powers every AI agent in the [Recif](https://git
 
 ## Quick Start
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 ### Install
+
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
 
 ```bash
 pip install corail
 ```
 
 ### Docker
+
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
 
 ```bash
 docker run -p 8000:8000 -p 8001:8001 \
@@ -42,6 +60,12 @@ docker run -p 8000:8000 -p 8001:8001 \
 
 ### Chat
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 ```bash
 curl -N http://localhost:8000/api/v1/agents/my-agent/chat \
   -H "Content-Type: application/json" \
@@ -50,6 +74,12 @@ curl -N http://localhost:8000/api/v1/agents/my-agent/chat \
 
 ### Local Development
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 ```bash
 uv sync && make dev
 ```
@@ -57,6 +87,12 @@ uv sync && make dev
 ---
 
 ## Key Features
+
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
 
 - **7 LLM providers** -- OpenAI, Anthropic, Google AI, Vertex AI (native), Ollama, AWS Bedrock, Stub. Registry pattern with lazy loading.
 - **Multi-channel I/O** -- REST API with SSE streaming, WebSocket, Slack, Google Chat, CLI. Pluggable channel adapters.
@@ -70,6 +106,12 @@ uv sync && make dev
 ---
 
 ## Architecture
+
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
 
 ```
                                 +---------------------+
@@ -107,6 +149,12 @@ uv sync && make dev
 
 ## LLM Providers
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 | Provider | `CORAIL_MODEL_TYPE` | Example Model |
 |----------|---------------------|---------------|
 | OpenAI | `openai` | `gpt-4o` |
@@ -120,6 +168,12 @@ uv sync && make dev
 ---
 
 ## Configuration
+
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
 
 | Variable | Default | Description |
 |----------|---------|-------------|
@@ -138,6 +192,12 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ## Related Repositories
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 | Repository | Description |
 |------------|-------------|
 | [recif](https://github.com/recif-platform/recif) | Go API + Next.js dashboard -- the control tower |
@@ -148,7 +208,19 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ## Roadmap
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 ### Runtime Core
+
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
 
 | Feature | Status | Description |
 |---------|:------:|-------------|
@@ -163,6 +235,12 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ### Strategies
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 | Strategy | Status | Description |
 |----------|:------:|-------------|
 | `simple` | 🟢 | Single-turn, no tool use |
@@ -172,6 +250,12 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 | `assistant` | 🟠 | Autonomous assistant — task planning, multi-step execution, self-correction, parallel tool use. Self-improving agent that learns from interactions. Inspired by OpenClaw/Claude Code. The core is intentionally kept simple for now — the real intelligence layer is the next big milestone. |
 
 ### Planned
+
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
 
 | Feature | Status | Description |
 |---------|:------:|-------------|
@@ -187,6 +271,12 @@ See the full [environment variable reference](https://recif-platform.github.io/d
 
 ## Contributing
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feat/your-feature`)
 3. Write tests for new functionality
@@ -199,6 +289,12 @@ Follow the existing code patterns: registry-based factories, abstract base class
 
 ## Links
 
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
+
 - [Documentation](https://recif-platform.github.io/docs)
 - [Discord](https://discord.gg/P279TT4ZCp)
 - [GitHub Organization](https://github.com/recif-platform)
@@ -206,5 +302,11 @@ Follow the existing code patterns: registry-based factories, abstract base class
 ---
 
 ## License
+
+<p align="center">
+  <a href="https://youtu.be/9n4S8NRI1zA"><img src="https://img.youtube.com/vi/9n4S8NRI1zA/maxresdefault.jpg" alt="Demo" width="560" /></a>
+  <br/><em>Watch the demo (2 min)</em>
+</p>
+
 
 [Apache License 2.0](LICENSE) -- Copyright 2026 Sciences44.
